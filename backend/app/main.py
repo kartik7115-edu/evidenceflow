@@ -22,6 +22,7 @@ from app.api.screening import router as screening_router
 from app.core.database import SessionLocal, utc_now
 from app.core.errors import AppError
 from app.models.audit import PipelineRun
+from app.web import mount_frontend
 
 
 @asynccontextmanager
@@ -106,6 +107,9 @@ def create_app() -> FastAPI:
     app.include_router(pico_router, prefix="/api")
     app.include_router(conflicts_router, prefix="/api")
     app.include_router(export_router, prefix="/api")
+
+    # Must come last: serves the built React app (if present) for non-API paths.
+    mount_frontend(app)
 
     return app
 
